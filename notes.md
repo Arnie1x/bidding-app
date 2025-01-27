@@ -35,3 +35,5 @@ updated_at
 - A bid can only be placed if and only if it's higher than the current bid
 - Bids for a given product cannot be placed after the bidding end time.
 - Highest bid for a given product should be highlighted alongside the product after bidding ends/ is closed (admins can specify an end time or manually close bidding).
+
+
