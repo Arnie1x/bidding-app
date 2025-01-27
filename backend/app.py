@@ -127,11 +127,13 @@ async def create_admin(admin: AdminCreate, db: Session = Depends(lambda: db.Sess
 async def add_product(product: ProductCreate, db: Session = Depends(lambda: db.Session()), current_user: User = Depends(get_current_user)):
     if not current_user.is_admin:
         raise HTTPException(status_code=403, detail="Only admins can add new products")
+    existing_admin = db.query(Admin).filter(Admin.user_id == current_user.user_id).first()
+    
     new_product = Product(
         name=product.name,
         description=product.description,
         starting_price=product.starting_price,
-        created_by=current_user.admin_profile.admin_id,
+        created_by=existing_admin.admin_id,
         bidding_end_time=product.bidding_end_time
     )
     db.add(new_product)
