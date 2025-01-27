@@ -172,7 +172,7 @@ async def place_bid(product_id: int, bid_amount: float, db: Session = Depends(la
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     highest_bid = db.query(func.max(Bid.amount)).filter(Bid.product_id == product_id).scalar()
-    if highest_bid is None or bid_amount <= highest_bid:
+    if highest_bid is not None and bid_amount <= highest_bid:
         raise HTTPException(status_code=400, detail="Bid amount must be higher than the highest bid")
     if product.bidding_end_time < datetime.now():
         raise HTTPException(status_code=400, detail="Bidding has ended for this product")
