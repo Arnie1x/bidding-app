@@ -28,15 +28,15 @@ interface ProductCardProps {
 
 export default function ProductCard(props: ProductCardProps) {
   return (
-    <Card className="md:max-w-[25rem] md:min-w-[18rem]">
+    <Card className="md:max-w-[25rem] md:min-w-[18rem] w-full">
       <CardHeader>
         <CardTitle>{props.title}</CardTitle>
-        <CardDescription className="text-ellipsis line-clamp-2">
-          {props.description}
+        <CardDescription className="text-ellipsis line-clamp-2 w-full">
+          <div className="w-full">{props.description}</div>
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
+        <Table className="w-full">
           {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
           <TableHeader>
             <TableRow>

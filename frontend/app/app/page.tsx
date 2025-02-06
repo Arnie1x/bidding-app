@@ -19,6 +19,13 @@ export default async function Dashboard() {
             startingPrice={product.startingPrice}
           />
         ))} */}
+        <ProductDialog
+          title="Product 1"
+          description="lorem ipsum dolor sit amet con sectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+          highestBid={1000}  // Replace with the actual highest bid
+          biddingEndTime="2023-06-30"  // Replace with the actual bidding end time
+          startingPrice={50}  // Replace with the actual starting price
+        />
       </div>
     </div>
   );
