@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { useState } from "react";
 
 export default function SignIn() {
@@ -7,23 +7,19 @@ export default function SignIn() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
-    const email = e.currentTarget.email.value;
-    const password = e.currentTarget.password.value;
-    const response = await fetch("http://localhost:8000/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: { "username": email, "password": password },
-    });
-    const data = await response.json();
-    if (data.error) {
-      setError(data.error);
-      // alert(data.error);
-    } else {
-      // window.location.href = "/";
-      console.log(data);
-    }
+      const formData = new FormData(e.currentTarget);
+      const response = await fetch("http://localhost:8000/token", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+      if (data.error) {
+        setError(data.error);
+        // alert(data.error);
+      } else {
+        // window.location.href = "/";
+        console.log(data);
+      }
     } catch (error) {
       console.error(error);
       setError(error.message);
@@ -42,7 +38,7 @@ export default function SignIn() {
         </label>
         <input
           type="email"
-          id="email"
+          id="username"
           name="username"
           className="block w-full p-2 mb-4 border border-gray-300 rounded-md"
           required
@@ -63,7 +59,9 @@ export default function SignIn() {
         >
           Sign In
         </button>
-        {error && <p className="text-red-500 mt-4">Error Signing In: {error}</p>}
+        {error && (
+          <p className="text-red-500 mt-4">Error Signing In: {error}</p>
+        )}
       </form>
     </div>
   );
