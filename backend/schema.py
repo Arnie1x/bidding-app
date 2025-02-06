@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing_extensions import Annotated
 from sqlalchemy import Column, Integer, String, Text, Numeric, ForeignKey, DateTime, func
-from sqlalchemy.orm import relationship, mapped_column, backref
+from sqlalchemy.orm import relationship, mapped_column
 from sqlalchemy.ext.declarative import declarative_base
 
 import os
@@ -19,8 +19,8 @@ class User(Base):
     name = Column(String(255), nullable=False)
     email = Column(String(255), nullable=False)
     password = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
     # Relationships
     bids = relationship("Bid", back_populates="user", cascade="all, delete-orphan")
@@ -37,8 +37,8 @@ class Admin(Base):
 
     admin_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
     # Relationships
     user = relationship("User", back_populates="admin_profile")
@@ -56,8 +56,8 @@ class Product(Base):
     highest_bid = Column(Numeric)
     user_id = Column(Integer, ForeignKey('users.user_id'), nullable=True)  # Highest bidder
     created_by = Column(Integer, ForeignKey('admins.admin_id'), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
     # Relationships
     bids = relationship("Bid", back_populates="product", cascade="all, delete-orphan")
@@ -72,8 +72,8 @@ class Bid(Base):
     product_id = Column(Integer, ForeignKey('products.product_id'), nullable=False)
     user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
     amount = Column(Numeric, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
 
     # Relationships
     product = relationship("Product", back_populates="bids")
