@@ -31,10 +31,12 @@ export default function RootLayout({
     <html lang="en">
       <SessionProvider>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen max-w-[90rem] mx-auto`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen min-w-screen`}
       >
+        <div className="max-w-[90rem] mx-auto">
         <Header />
-        {children}
+          {children}
+        </div>
       </body>
       </SessionProvider>
     </html>

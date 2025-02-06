@@ -23,7 +23,7 @@ export default function ProductCard() {
     <Card className="md:max-w-[25rem] md:min-w-[18rem]">
       <CardHeader>
         <CardTitle>Product A</CardTitle>
-        <CardDescription>
+        <CardDescription className="text-ellipsis line-clamp-2">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima,
           quidem incidunt. Eum modi maxime aut officia recusandae dolor voluptas
           ducimus!
@@ -53,7 +53,7 @@ export default function ProductCard() {
             </TableRow>
           </TableBody>
         </Table>
-        <div className="flex w-full justify-end"><Button className="mt-4">Place Bid</Button></div>
+        {/* <div className="flex w-full justify-end"><Button variant={"outline"} className="mt-4 w-full">View More</Button></div> */}
       </CardContent>
       <CardFooter></CardFooter>
     </Card>
