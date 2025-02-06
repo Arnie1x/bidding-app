@@ -14,6 +14,36 @@ async function getUser(email: string) {
         return null;
     }
 }
+
+export async function signUp(formData: FormData) {
+    try {
+        const parsedCredentials = z.object({
+            name: z.string(),
+            email: z.string().email(),
+            password: z.string(),
+        }).safeParse({name: formData.get('name'), email: formData.get('email'), password: formData.get('password')}); 
+        if (!parsedCredentials.success) {
+            console.log(parsedCredentials.error);
+            return null;
+        }
+        const { name, email, password } = parsedCredentials.data;
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const res = await axios.post('http://localhost:8000/signup', {
+            name: name,
+            email: email,
+            password: hashedPassword
+        });
+        if (res.data) {
+            return res.data;
+        }
+        console.log(res.statusText);
+        return null;
+    } catch (error) {
+        console.error(error);
+        return null;
+}}
+
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [

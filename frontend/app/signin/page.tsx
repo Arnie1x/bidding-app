@@ -9,7 +9,7 @@ import { useSearchParams } from 'next/navigation';
 export default function SignIn() {
 //   const [error, setError] = useState("");
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+  const callbackUrl = searchParams.get('callbackUrl') || '/app';
   const [errorMessage, formAction, isPending] = useActionState(
     authenticate,
     undefined,
