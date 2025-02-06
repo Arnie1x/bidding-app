@@ -5,6 +5,14 @@ export const authConfig = {
     signIn: '/signin',
   },
   callbacks: {
+    // jwt({ token, user }) {
+    //   if (user) token.id = user.id;
+    //   return token;
+    // },
+    // session({ session, user }) {
+    //   session.user.id = user.id;
+    //   return session;
+    // },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/app');

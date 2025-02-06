@@ -1,7 +1,6 @@
 'use server';
 
-import { signIn } from '@/auth';
-import { signUp } from '@/auth';
+import { signIn, signUp, signOut } from '@/auth';
 import { AuthError } from 'next-auth';
 import { redirect } from 'next/navigation';
 
@@ -46,5 +45,13 @@ export async function new_user(
             }
         }
         throw error;
+    }
+}
+
+export async function logOut() {
+    try {
+        await signOut();
+    } catch (error) {
+        console.error(error);
     }
 }
