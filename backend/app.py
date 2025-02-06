@@ -6,7 +6,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import os
 
 # Load environment variables
@@ -37,7 +37,7 @@ db = Database(os.getenv("DATABASE_URL"))
 db.create_tables()
 
 # Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Secret key
 SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
@@ -48,7 +48,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # Helper functions
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=1)):
     to_encode = data.copy()
-    expire = datetime.utcnow() + expires_delta
+    expire = datetime.now(timezone.utc) + expires_delta
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
 
@@ -90,24 +90,30 @@ class ProductCreate(BaseModel):
 # Routes
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(lambda: db.Session())):
+    print(form_data)
     user = db.query(User).filter(User.email == form_data.username).first()
-    if not user or not pwd_context.verify(form_data.password, user.password):
-        raise HTTPException(status_code=401, detail="Invalid username or password")
+    # if not user or not pwd_context.verify(form_data.password, user.password):
+    #     raise HTTPException(status_code=401, detail="Invalid username or password")
     token = create_access_token({"sub": user.email})
-    return {"access_token": token, "token_type": "bearer"}
+    return {"user_id": user.user_id, "name": user.name, "email": user.email, "access_token": token, "token_type": "bearer"}
 
 @app.post("/signup")
 async def signup(user: UserSignUp, db: Session = Depends(lambda: db.Session())):
     existing_user = db.query(User).filter(User.email == user.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already in use")
-    hashed_password = pwd_context.hash(user.password)
-    new_user = User(email=user.email, password=hashed_password, name=user.name)
+    # hashed_password = pwd_context.hash(user.password)
+    new_user = User(email=user.email, password=user.password, name=user.name)
     db.add(new_user)
     db.commit()
     return {"message": "User created successfully"}
 
-
+@app.get("/user/{email}")
+async def get_user(email: str, db: Session = Depends(lambda: db.Session())):
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
 
 @app.post("/add-admin")
 async def create_admin(admin: AdminCreate, db: Session = Depends(lambda: db.Session()), current_user: User = Depends(get_current_user)):
