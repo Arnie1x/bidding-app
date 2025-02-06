@@ -18,15 +18,21 @@ import {
 } from "@/components/ui/table";
 import { Button } from "./ui/button";
 
-export default function ProductCard() {
+interface ProductCardProps {
+  title: string;
+  description: string;
+  highestBid: number;
+  biddingEndTime: string;
+  startingPrice: number;
+}
+
+export default function ProductCard(props: ProductCardProps) {
   return (
     <Card className="md:max-w-[25rem] md:min-w-[18rem]">
       <CardHeader>
-        <CardTitle>Product A</CardTitle>
+        <CardTitle>{props.title}</CardTitle>
         <CardDescription className="text-ellipsis line-clamp-2">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima,
-          quidem incidunt. Eum modi maxime aut officia recusandae dolor voluptas
-          ducimus!
+          {props.description}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -35,21 +41,17 @@ export default function ProductCard() {
           <TableHeader>
             <TableRow>
               <TableHead className="font-bold">Highest Bid</TableHead>
-              <TableHead className="font-bold">$ 100000</TableHead>
+              <TableHead className="font-bold">$ {props.highestBid}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow>
+              <TableCell className="font-medium">Starting Price</TableCell>
+              <TableCell>$ {props.startingPrice}</TableCell>
+            </TableRow>
+            <TableRow>
               <TableCell className="font-medium">Bidding End Time</TableCell>
-              <TableCell>2024-01-01</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">Starting Price</TableCell>
-              <TableCell>10000</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-medium">Starting Price</TableCell>
-              <TableCell>10000</TableCell>
+              <TableCell>{props.biddingEndTime}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
