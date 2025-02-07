@@ -30,14 +30,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <SessionProvider>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen min-w-screen`}
-      >
-        <div className="max-w-[90rem] mx-auto">
-        <Header />
-          {children}
-        </div>
-      </body>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen min-w-screen relative`}
+        >
+          <div className="max-w-[90rem] h-screen px-2 mx-auto">
+            <Header />
+            {children}
+          </div>
+        </body>
       </SessionProvider>
     </html>
   );

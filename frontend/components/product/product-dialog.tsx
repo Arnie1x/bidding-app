@@ -22,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ProductCard from "./product-card";
+import { ProductBidForm } from "./product-bid-form";
 
 interface ProductDialogProps {
   title: string;
@@ -32,6 +33,12 @@ interface ProductDialogProps {
 }
 
 export function ProductDialog(props: ProductDialogProps) {
+
+  // const handleBid = (e) => {
+  //   e.preventDefault();
+  //   console.log(bidAmount);
+  // };
+
   return (
     <Dialog>
       <DialogTrigger className="cursor-pointer" asChild>
@@ -48,7 +55,7 @@ export function ProductDialog(props: ProductDialogProps) {
           <DialogTitle>{props.title}</DialogTitle>
           <DialogDescription>{props.description}</DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="flex flex-col gap-4 pt-4">
           <Table>
             {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>
@@ -62,7 +69,7 @@ export function ProductDialog(props: ProductDialogProps) {
             <TableBody>
               <TableRow>
                 <TableCell className="font-medium">Starting Price</TableCell>
-                <TableCell>{props.startingPrice}</TableCell>
+                <TableCell>$ {props.startingPrice}</TableCell>
               </TableRow>
               <TableRow>
                 <TableCell className="font-medium">Bidding End Time</TableCell>
@@ -70,26 +77,8 @@ export function ProductDialog(props: ProductDialogProps) {
               </TableRow>
             </TableBody>
           </Table>
-          <div className="flex flex-row items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Bid Amount
-            </Label>
-            <Input
-              type="number"
-              id="Amount"
-              placeholder="e.g. 1000"
-              className="col-span-3"
-            />
-          </div>
+          <ProductBidForm />
         </div>
-        <DialogFooter className="flex justify-end">
-          <DialogClose asChild>
-            <Button type="button" className="mt-2 sm:mt-0" variant="secondary">
-              Close
-            </Button>
-          </DialogClose>
-          <Button type="submit">Place Bid</Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

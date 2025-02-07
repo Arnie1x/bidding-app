@@ -23,14 +23,14 @@ const ProductCreateDialog = () => {
           <DialogTitle>Create Product</DialogTitle>
         </DialogHeader>
         <ProductCreateForm />
-        <DialogFooter className="flex justify-end">
+        {/* <DialogFooter className="flex justify-end">
           <DialogClose asChild>
             <Button type="button" className="mt-2 sm:mt-0" variant="secondary">
               Close
             </Button>
           </DialogClose>
           <Button type="submit">Create</Button>
-        </DialogFooter>
+        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );
