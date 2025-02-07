@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { logOut } from "@/app/lib/actions";
 import Divider from "./ui/divider";
 import { getProducts } from "@/app/lib/data";
+import ProductCreateDialog from "./product/product-create-dialog";
 
 export default function Header() {
     // const user = useSession().data?.user;
@@ -14,9 +15,7 @@ export default function Header() {
             <h1 className="text-2xl font-bold">Bidding App</h1>
             <div className="flex gap-2 items-center h-full">
                 {/* <p>Hello, { user?.name }</p> */}
-                <form action="">
-                    <Button variant="ghost">Create Product</Button>
-                </form>
+                <ProductCreateDialog />
                 <Divider orientation="vertical" />
                 <form action={
                     async () => {
