@@ -33,7 +33,6 @@ interface ProductDialogProps {
 }
 
 export function ProductDialog(props: ProductDialogProps) {
-
   // const handleBid = (e) => {
   //   e.preventDefault();
   //   console.log(bidAmount);
@@ -55,7 +54,7 @@ export function ProductDialog(props: ProductDialogProps) {
           <DialogTitle>{props.title}</DialogTitle>
           <DialogDescription>{props.description}</DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-4 pt-4">
+        <div className="flex flex-col gap-4 justify-between">
           <Table>
             {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
             <TableHeader>

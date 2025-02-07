@@ -37,7 +37,7 @@ db = Database(os.getenv("DATABASE_URL"))
 db.create_tables()
 
 # Password hashing
-# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Secret key
 SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
@@ -92,8 +92,8 @@ class ProductCreate(BaseModel):
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(lambda: db.Session())):
     print(form_data)
     user = db.query(User).filter(User.email == form_data.username).first()
-    # if not user or not pwd_context.verify(form_data.password, user.password):
-    #     raise HTTPException(status_code=401, detail="Invalid username or password")
+    if not user or not pwd_context.verify(form_data.password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid username or password")
     token = create_access_token({"sub": user.email})
     return {"user_id": user.user_id, "name": user.name, "email": user.email, "access_token": token, "token_type": "bearer"}
 
@@ -102,7 +102,7 @@ async def signup(user: UserSignUp, db: Session = Depends(lambda: db.Session())):
     existing_user = db.query(User).filter(User.email == user.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already in use")
-    # hashed_password = pwd_context.hash(user.password)
+    hashed_password = pwd_context.hash(user.password)
     new_user = User(email=user.email, password=user.password, name=user.name)
     db.add(new_user)
     db.commit()
@@ -149,6 +149,11 @@ async def add_product(product: ProductCreate, db: Session = Depends(lambda: db.S
 @app.get("/products")
 async def list_products(db: Session = Depends(lambda: db.Session())):
     products = db.query(Product).order_by(Product.bidding_end_time.desc()).all()
+    for product in products:
+        highest_bid = db.query(func.max(Bid.amount)).filter(Bid.product_id == product.product_id).scalar()
+        if not highest_bid:
+            highest_bid = product.starting_price
+        product.highest_bid = highest_bid
     return products
 
 @app.get("/product/{product_id}")
@@ -172,13 +177,26 @@ async def delete_product(product_id: int, db: Session = Depends(lambda: db.Sessi
     db.commit()
     return {"message": "Product deleted successfully"}
 
+@app.get("/product/{product_id}/bids")
+async def list_bids(product_id: int, db: Session = Depends(lambda: db.Session())):
+    product = db.query(Product).filter(Product.product_id == product_id).first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    bids = db.query(Bid).filter(Bid.product_id == product_id).order_by(Bid.amount.desc()).all()
+    return bids
+
+
 @app.post("/product/{product_id}/bid")
 async def place_bid(product_id: int, bid_amount: float, db: Session = Depends(lambda: db.Session()), current_user: User = Depends(get_current_user)):
     product = db.query(Product).filter(Product.product_id == product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
-    highest_bid = db.query(func.max(Bid.amount)).filter(Bid.product_id == product_id).scalar()
-    if highest_bid is not None and bid_amount <= highest_bid:
+    
+    highest_bid = db.query(func.max(Bid.amount)).filter(Bid.product_id == product.product_id).scalar()
+    if not highest_bid:
+        highest_bid = product.starting_price
+    
+    if bid_amount <= highest_bid:
         raise HTTPException(status_code=400, detail="Bid amount must be higher than the highest bid")
     if product.bidding_end_time < datetime.now():
         raise HTTPException(status_code=400, detail="Bidding has ended for this product")

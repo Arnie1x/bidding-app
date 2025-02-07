@@ -20,7 +20,7 @@ export function ProductBidForm() {
     return (
         <form onSubmit={handleSubmit} className="flex flex-col">
             <div className="flex flex-row items-center gap-4">
-            <Label htmlFor="username" className="text-right">
+            <Label htmlFor="username" className="text-right text-sm">
               Bid Amount
             </Label>
             <Input
@@ -31,7 +31,7 @@ export function ProductBidForm() {
               onChange={(e) => setAmount(e.target.valueAsNumber)}
             />
           </div>
-          <DialogFooter className="flex justify-end mt-2">
+          <DialogFooter className="flex justify-end mt-4">
             <DialogClose asChild>
               <Button
                 type="button"
