@@ -148,7 +148,7 @@ async def add_product(product: ProductCreate, db: Session = Depends(lambda: db.S
 
 @app.get("/products")
 async def list_products(db: Session = Depends(lambda: db.Session())):
-    products = db.query(Product).order_by(Product.bidding_end_time).all()
+    products = db.query(Product).order_by(Product.bidding_end_time.desc()).all()
     return products
 
 @app.get("/product/{product_id}")
