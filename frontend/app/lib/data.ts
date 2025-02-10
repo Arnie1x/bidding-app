@@ -1,8 +1,9 @@
+import { apiClient } from "@/utils/apiClient";
 import axios from "axios";
 
 export async function getProducts() {
     try {
-        const res = await axios.get('http://localhost:8000/products');
+        const res = await apiClient.get('/products');
         // console.log(res.data);
         return res.data;
     } catch (error) {

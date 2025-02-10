@@ -1,6 +1,6 @@
 'use server';
 
-import { signIn, signUp, signOut } from '@/auth';
+// import { signIn, signUp, signOut } from '@/auth';
 import { AuthError } from 'next-auth';
 import { redirect } from 'next/navigation';
 
