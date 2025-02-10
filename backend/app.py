@@ -46,7 +46,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Helper functions
-def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=1)):
+def create_access_token(data: dict, expires_delta: timedelta = timedelta(days=7)):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + expires_delta
     to_encode.update({"exp": expire})
@@ -92,10 +92,15 @@ class ProductCreate(BaseModel):
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(lambda: db.Session())):
     print(form_data)
     user = db.query(User).filter(User.email == form_data.username).first()
+    admin = db.query(Admin).filter(Admin.user_id == user.user_id).first()
+    if admin:
+        admin_id = admin.admin_id
+    else:
+        admin_id = None
     if not user or not pwd_context.verify(form_data.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
     token = create_access_token({"sub": user.email})
-    return {"user_id": user.user_id, "name": user.name, "email": user.email, "access_token": token, "token_type": "bearer"}
+    return {"user_id": user.user_id, "admin_id" : admin_id, "name": user.name, "email": user.email, "access_token": token, "token_type": "bearer"}
 
 @app.post("/signup")
 async def signup(user: UserSignUp, db: Session = Depends(lambda: db.Session())):

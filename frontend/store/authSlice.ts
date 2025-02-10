@@ -7,6 +7,7 @@ var CryptoJS = require('crypto-js');
 interface AuthState {
   user: {
     id: number | null;
+    admin_id: number | null;
     name: string | null;
     email: string | null;
   } | null;
@@ -60,6 +61,7 @@ export const loginAsync = createAsyncThunk(
       if (response.status === 200 && response.data.access_token) {
         return {
           id: response.data.user_id,
+          admin_id: response.data.admin_id,
           name: response.data.name,
           email: credentials.email,
           accessToken: response.data.access_token,
@@ -107,6 +109,7 @@ const authSlice = createSlice({
         state.status = "idle";
         state.user = {
           id: action.payload.id,
+          admin_id: action.payload.admin_id,
           name: action.payload.name,
           email: action.payload.email,
         };
