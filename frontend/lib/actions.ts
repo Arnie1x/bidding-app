@@ -11,6 +11,15 @@ interface SignUpFormData {
     confirmPassword: string;
 }
 
+class Data {
+    data: object | null;
+    errors: any | null;
+    constructor(data: object | null, errors: any | null) {
+        this.data = data;
+        this.errors = errors;
+    }
+}
+
 // export function toast(description: string, title?: string, variant?: 'default' | 'destructive') {
 //     const { toast } = useToast()
 //     if (title && description && variant) {
@@ -62,12 +71,10 @@ export async function placeBid(data: BidFormData) {
     try {
         const res = await apiClient.post(`/product/${data.product_id}/bid`, data);
         // console.log(res.data);
-        // toast(`Bid placed successfully for $ ${data.bid_amount}`, "Success");
-        return res.data;
+        return new Data(res.data, null);
     } catch (error) {
         console.error(error);
-        // toast("Something went wrong while placing the bid. Please try again.", "Error", "destructive");
-        return null;
+        return new Data(null, error);
     }
 }
 

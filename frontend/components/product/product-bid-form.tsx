@@ -17,10 +17,10 @@ export function ProductBidForm({ product_id }: { product_id: number }) {
         e.preventDefault();
         const res = await placeBid({ product_id, bid_amount: amount });
         // const res = await testProtectedRoute();
-        if (!res) {
+        if (res.errors) {
           toast({
             title: "Error",
-            description: "Something went wrong while placing the bid. Please try again.",
+            description: `${res.errors}`,
             variant: "destructive",
           });
         }
