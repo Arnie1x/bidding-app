@@ -3,9 +3,11 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "../ui/label";
-import { useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { Textarea } from "@/components/ui/textarea";
 import { DialogClose } from "../ui/dialog";
+import { createProduct } from "@/lib/actions";
+import { toast } from "@/hooks/use-toast";
 
 const ProductCreateForm = () => {
   const [name, setName] = useState('');
@@ -13,14 +15,22 @@ const ProductCreateForm = () => {
   const [startingPrice, setStartingPrice] = useState(0);
   const [biddingEndTime, setBiddingEndTime] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log({
-      name,
-      description,
-      starting_price: startingPrice,
-      bidding_end_time: biddingEndTime,
-    });
+    const res = await createProduct({ name, description, starting_price: startingPrice, bidding_end_time: new Date(biddingEndTime) });
+      if (res.errors) {
+        toast({
+          title: "Error",
+          description: `${res.errors}`,
+          variant: "destructive",
+        });
+      }
+      else {
+        toast({
+          title: "Success",
+          description: "Product created successfully",
+        });
+      }
   };
 
   return (

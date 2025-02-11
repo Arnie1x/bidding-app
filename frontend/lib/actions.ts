@@ -78,6 +78,23 @@ export async function placeBid(data: BidFormData) {
     }
 }
 
+interface ProductFormData {
+    name: string;
+    description: string;
+    starting_price: number;
+    bidding_end_time: Date;
+}
+
+export async function createProduct(data: ProductFormData) {
+    try {
+        const res = await apiClient.post('/add-product', data);
+        return new Data(res.data, null);
+    } catch (error) {
+        console.error(error);
+        return new Data(null, error);
+    }
+}
+
 export async function testProtectedRoute() {
     try {
         const res = await apiClient.get('/protected');
