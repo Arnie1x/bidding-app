@@ -5,16 +5,33 @@ import { Label } from "@radix-ui/react-label";
 import { Button } from "../ui/button";
 import { DialogFooter } from "../ui/dialog";
 import { Input } from "../ui/input";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import { placeBid, testProtectedRoute } from "@/lib/actions";
+import { useRouter } from "next/router";
+import { toast } from "@/hooks/use-toast";
 
-export function ProductBidForm() {
+export function ProductBidForm({ product_id }: { product_id: number }) {
     const [amount, setAmount] = useState(0);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        console.log({
-          amount,
-        });
+        const res = await placeBid({ product_id, bid_amount: amount });
+        // const res = await testProtectedRoute();
+        if (!res) {
+          toast({
+            title: "Error",
+            description: "Something went wrong while placing the bid. Please try again.",
+            variant: "destructive",
+          });
+        }
+        else {
+          toast({
+            title: "Success",
+            description: "Bid placed successfully for $ " + amount,
+          });
+        }
+        // const router = useRouter();
+        // router.reload();
       };
     
     return (
@@ -23,6 +40,7 @@ export function ProductBidForm() {
             <Label htmlFor="username" className="text-right text-sm">
               Bid Amount
             </Label>
+            <Input type="hidden" id="product_id" value={product_id} />
             <Input
               type="number"
               id="Amount"

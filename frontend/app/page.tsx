@@ -13,6 +13,7 @@ export default async function Dashboard() {
           products.map((product) => (
             <ProductDialog
               key={product.product_id}
+              product_id={product.product_id}
               title={product.name}
               description={product.description}
               highestBid={product.highest_bid}

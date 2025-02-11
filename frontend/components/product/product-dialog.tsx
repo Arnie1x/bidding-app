@@ -25,6 +25,7 @@ import ProductCard from "./product-card";
 import { ProductBidForm } from "./product-bid-form";
 
 interface ProductDialogProps {
+  product_id: number;
   title: string;
   description: string;
   highestBid: number;
@@ -76,7 +77,7 @@ export function ProductDialog(props: ProductDialogProps) {
               </TableRow>
             </TableBody>
           </Table>
-          <ProductBidForm />
+          <ProductBidForm product_id={props.product_id} />
         </div>
       </DialogContent>
     </Dialog>

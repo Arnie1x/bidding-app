@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/header";
 import { SessionProvider } from "next-auth/react";
 import Providers from "./providers";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,11 +35,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen min-w-screen relative`}
       >
         <Providers>
-          <div className="max-w-[90rem] h-screen px-2 mx-auto">
+          <div className="flex flex-col max-w-[90rem] h-full px-2 mx-auto">
             <Header />
-            {children}
+            <div className="h-full w-full">{children}</div>
           </div>
         </Providers>
+        <Toaster />
       </body>
     </html>
   );

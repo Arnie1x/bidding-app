@@ -57,7 +57,7 @@ export default function ProductCard(props: ProductCardProps) {
         </Table>
         {/* <div className="flex w-full justify-end"><Button variant={"outline"} className="mt-4 w-full">View More</Button></div> */}
       </CardContent>
-      <CardFooter></CardFooter>
+      {/* <CardFooter></CardFooter> */}
     </Card>
   );
 }

@@ -78,6 +78,10 @@ class UserSignUp(BaseModel):
     password: str
     name: str
     
+class PlaceBid(BaseModel):
+    product_id: int
+    bid_amount: int
+    
 class AdminCreate(BaseModel):
     email: str
 
@@ -108,7 +112,7 @@ async def signup(user: UserSignUp, db: Session = Depends(lambda: db.Session())):
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already in use")
     hashed_password = pwd_context.hash(user.password)
-    new_user = User(email=user.email, password=user.password, name=user.name)
+    new_user = User(email=user.email, password=hashed_password, name=user.name)
     db.add(new_user)
     db.commit()
     return {"message": "User created successfully"}
@@ -192,8 +196,8 @@ async def list_bids(product_id: int, db: Session = Depends(lambda: db.Session())
 
 
 @app.post("/product/{product_id}/bid")
-async def place_bid(product_id: int, bid_amount: float, db: Session = Depends(lambda: db.Session()), current_user: User = Depends(get_current_user)):
-    product = db.query(Product).filter(Product.product_id == product_id).first()
+async def place_bid(bid: PlaceBid, db: Session = Depends(lambda: db.Session()), current_user: User = Depends(get_current_user)):
+    product = db.query(Product).filter(Product.product_id == bid.product_id).first()
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
@@ -201,11 +205,11 @@ async def place_bid(product_id: int, bid_amount: float, db: Session = Depends(la
     if not highest_bid:
         highest_bid = product.starting_price
     
-    if bid_amount <= highest_bid:
+    if bid.bid_amount <= highest_bid:
         raise HTTPException(status_code=400, detail="Bid amount must be higher than the highest bid")
     if product.bidding_end_time < datetime.now():
         raise HTTPException(status_code=400, detail="Bidding has ended for this product")
-    new_bid = Bid(product_id=product_id, user_id=current_user.user_id, amount=bid_amount)
+    new_bid = Bid(product_id=bid.product_id, user_id=current_user.user_id, amount=bid.bid_amount)
     db.add(new_bid)
     db.commit()
     return {"message": "Bid placed successfully"}
