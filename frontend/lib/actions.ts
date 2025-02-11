@@ -95,6 +95,16 @@ export async function createProduct(data: ProductFormData) {
     }
 }
 
+export async function deleteProduct(product_id: number) {
+    try {
+        const res = await apiClient.delete(`/product/${product_id}`);
+        return new Data(res.data, null);
+    } catch (error) {
+        console.error(error);
+        return new Data(null, error);
+    }
+}
+
 export async function testProtectedRoute() {
     try {
         const res = await apiClient.get('/protected');

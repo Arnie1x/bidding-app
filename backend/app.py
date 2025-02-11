@@ -28,7 +28,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
 
@@ -177,6 +177,7 @@ async def get_product(product_id: int, db: Session = Depends(lambda: db.Session(
 
 @app.delete("/product/{product_id}")
 async def delete_product(product_id: int, db: Session = Depends(lambda: db.Session()), current_user: User = Depends(get_current_user)):
+    print(product_id)
     if not current_user.is_admin:
         raise HTTPException(status_code=403, detail="Only admins can delete products")
     product = db.query(Product).filter(Product.product_id == product_id).first()
