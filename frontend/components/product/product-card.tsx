@@ -24,6 +24,7 @@ interface ProductCardProps {
   highestBid: number;
   biddingEndTime: string;
   startingPrice: number;
+  userBid?: number;
 }
 
 export default function ProductCard(props: ProductCardProps) {
@@ -45,10 +46,17 @@ export default function ProductCard(props: ProductCardProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">Starting Price</TableCell>
-              <TableCell>$ {props.startingPrice}</TableCell>
-            </TableRow>
+            {props.userBid ? (
+              <TableRow>
+                <TableCell className="font-medium">My Bid</TableCell>
+                <TableCell>$ {props.userBid}</TableCell>
+              </TableRow>
+            ) : (
+              <TableRow>
+                <TableCell className="font-medium">Starting Price</TableCell>
+                <TableCell>$ {props.startingPrice}</TableCell>
+              </TableRow>
+            )}
             <TableRow>
               <TableCell className="font-medium">Bidding End Time</TableCell>
               <TableCell>{props.biddingEndTime}</TableCell>

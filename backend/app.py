@@ -56,6 +56,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_email = payload.get("sub")
+        print("User Email" + user_email)
         if user_email is None:
             raise HTTPException(status_code=401, detail="Invalid token")
     except jwt.ExpiredSignatureError:
@@ -164,6 +165,34 @@ async def list_products(db: Session = Depends(lambda: db.Session())):
             highest_bid = product.starting_price
         product.highest_bid = highest_bid
     return products
+
+@app.get("/products/{user_id}/bids")
+async def get_products_with_bids(user_id: int, db: Session = Depends(lambda: db.Session())):
+    # Fetch all bids placed by the current user
+    user_bids = db.query(Bid).filter(Bid.user_id == user_id).order_by(Bid.bid_id.desc()).all()
+    
+    # Filter out older bids for a product and only leave the latest bid by that user for a specific product
+    latest_bids = {}
+    for bid in user_bids:
+        if bid.product_id not in latest_bids or bid.bid_id > latest_bids[bid.product_id].bid_id:
+            latest_bids[bid.product_id] = bid
+    
+    products_with_bids = []
+    for product_id, bid in latest_bids.items():
+        product = db.query(Product).filter(Product.product_id == product_id).first()
+        highest_bid = db.query(func.max(Bid.amount)).filter(Bid.product_id == product_id).scalar()
+        if not highest_bid:
+            highest_bid = product.starting_price
+        
+        product_data = {
+            **product.__dict__,
+            "highest_bid": highest_bid,
+            "user_bid_amount": bid.amount,
+        }
+        products_with_bids.append(product_data)
+    
+    return products_with_bids
+
 
 @app.get("/product/{product_id}")
 async def get_product(product_id: int, db: Session = Depends(lambda: db.Session())):

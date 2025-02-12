@@ -1,14 +1,22 @@
-import { getProducts } from "@/lib/actions";
 import { ProductDialog } from "@/components/product/product-dialog";
-import { formatDateTime } from "@/app/lib/utils";
+import { formatDateTime } from "../lib/utils";
+import { getProductsWithBids, testProtectedRoute } from "@/lib/actions";
+import { useAuthHeaders } from "@/utils/headers";
+import { store } from "@/store/store";
+import { getAuthToken } from "@/utils/getAuthToken";
 
-export default async function Dashboard() {
-  const products = await getProducts();
-
+export default async function Bids() {
+  const res = await getProductsWithBids();
+  const products = res.data;
+  if (!res.errors) {
+  };
+  const token = await getAuthToken();
+  console.log(token)
   return (
     <div className="flex flex-col items-center">
-      <h1 className="text-2xl p-3 w-full font-bold">Dashboard</h1>
+      <h1 className="text-2xl p-3 w-full font-bold">My Bids</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {res.errors && <p>{res.errors}</p>}
         {products &&
           products.map((product) => (
             <ProductDialog
@@ -19,6 +27,7 @@ export default async function Dashboard() {
               highestBid={product.highest_bid}
               biddingEndTime={formatDateTime(product.bidding_end_time)}
               startingPrice={product.starting_price}
+              userBid={product.user_bid_amount}
             />
           ))}
       </div>

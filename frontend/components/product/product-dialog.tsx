@@ -31,6 +31,7 @@ interface ProductDialogProps {
   highestBid: number;
   biddingEndTime: string;
   startingPrice: number;
+  userBid?: number;
 }
 
 export function ProductDialog(props: ProductDialogProps) {
@@ -48,6 +49,7 @@ export function ProductDialog(props: ProductDialogProps) {
           highestBid={props.highestBid}
           biddingEndTime={props.biddingEndTime}
           startingPrice={props.startingPrice}
+          userBid={props.userBid}
         />
       </DialogTrigger>
       <DialogContent>
@@ -67,10 +69,17 @@ export function ProductDialog(props: ProductDialogProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell className="font-medium">Starting Price</TableCell>
-                <TableCell>$ {props.startingPrice}</TableCell>
-              </TableRow>
+              {props.userBid ? (
+                <TableRow>
+                  <TableCell className="font-medium">My Bid</TableCell>
+                  <TableCell>$ {props.userBid}</TableCell>
+                </TableRow>
+              ) : (
+                <TableRow>
+                  <TableCell className="font-medium">Starting Price</TableCell>
+                  <TableCell>$ {props.startingPrice}</TableCell>
+                </TableRow>
+              )}
               <TableRow>
                 <TableCell className="font-medium">Bidding End Time</TableCell>
                 <TableCell>{props.biddingEndTime}</TableCell>

@@ -46,6 +46,10 @@ export default function Header() {
           <>
             <p className="text-sm px-4">Hello, {user.name}</p>
             <Divider orientation="vertical" />
+            <Button onClick={() => router.push('/bids')} variant="ghost">
+            View Bids
+          </Button>
+            <Divider orientation="vertical" />
           </>
         )}
         {user.admin_id && (

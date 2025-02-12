@@ -1,19 +1,24 @@
+// utils/apiClient.ts
+
 import axios from "axios";
-import { store } from "@/store/store";
+import { getAuthToken } from "./getAuthToken";
 
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
-// add an interceptor to attach the token on every request
+// Attach an interceptor that gets the current token on each request.
 apiClient.interceptors.request.use((config) => {
-  const state = store.getState();
-  const token = state.auth.accessToken;
+  const token = getAuthToken();
   if (token) {
-    config.headers = {
-      ...config.headers,
-      Authorization: `Bearer ${token}`,
-    };
+    if (config.method === 'get') {
+      config.params = { ...config.params, token };
+    } else {
+      config.headers = {
+        ...config.headers,
+        Authorization: `Bearer ${token}`,
+      };
+    }
   }
   return config;
 });

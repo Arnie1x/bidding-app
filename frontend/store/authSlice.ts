@@ -124,6 +124,7 @@ const authSlice = createSlice({
           secure: process.env.NODE_ENV === "production",
           sameSite: "strict",
         });
+        console.log(state.user);
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.status = "failed";
