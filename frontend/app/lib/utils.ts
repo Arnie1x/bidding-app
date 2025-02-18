@@ -15,3 +15,9 @@ export function formatDateTime(dateTimeString: string): string {
     const convertedDate = new Date(date.toLocaleString('en-US', { timeZone: userTimeZone }));
     return new Intl.DateTimeFormat(undefined, options).format(convertedDate);
   }
+
+export function isBiddingActive(biddingEndTime: string): boolean {
+    const now = new Date();
+    const biddingEndTimeDate = new Date(biddingEndTime);
+    return biddingEndTimeDate > now;
+}

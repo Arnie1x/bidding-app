@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ProductCard from "./product-card";
 import { ProductBidForm } from "./product-bid-form";
+import { formatDateTime, isBiddingActive } from "@/app/lib/utils";
 
 interface ProductDialogProps {
   product_id: number;
@@ -82,11 +83,11 @@ export function ProductDialog(props: ProductDialogProps) {
               )}
               <TableRow>
                 <TableCell className="font-medium">Bidding End Time</TableCell>
-                <TableCell>{props.biddingEndTime}</TableCell>
+                <TableCell>{formatDateTime(props.biddingEndTime)}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
-          <ProductBidForm product_id={props.product_id} />
+            <ProductBidForm product_id={props.product_id} bidding_end_time={props.biddingEndTime} />
         </div>
       </DialogContent>
     </Dialog>

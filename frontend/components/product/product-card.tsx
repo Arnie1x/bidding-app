@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "../ui/button";
+import { formatDateTime } from "@/app/lib/utils";
 
 interface ProductCardProps {
   title: string;
@@ -59,7 +60,7 @@ export default function ProductCard(props: ProductCardProps) {
             )}
             <TableRow>
               <TableCell className="font-medium">Bidding End Time</TableCell>
-              <TableCell>{props.biddingEndTime}</TableCell>
+              <TableCell>{formatDateTime(props.biddingEndTime)}</TableCell>
             </TableRow>
           </TableBody>
         </Table>

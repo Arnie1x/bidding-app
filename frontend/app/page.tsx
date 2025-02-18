@@ -18,7 +18,7 @@ export default async function Dashboard() {
               title={product.name}
               description={product.description}
               highestBid={product.highest_bid}
-              biddingEndTime={formatDateTime(product.bidding_end_time)}
+              biddingEndTime={product.bidding_end_time}
               startingPrice={product.starting_price}
             />
           ))}

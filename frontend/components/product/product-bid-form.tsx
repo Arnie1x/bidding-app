@@ -6,8 +6,9 @@ import { Input } from "../ui/input";
 import { deleteProduct, placeBid, testProtectedRoute } from "@/lib/actions";
 import { toast } from "@/hooks/use-toast";
 import { getSession } from "@/lib/auth";
+import { isBiddingActive } from "@/app/lib/utils";
 
-export async function ProductBidForm({ product_id }: { product_id: number }) {
+export async function ProductBidForm({ product_id, bidding_end_time }: { product_id: number, bidding_end_time: string }) {
   const session = await getSession();
   const user = session?.user || {};
 
@@ -34,7 +35,8 @@ export async function ProductBidForm({ product_id }: { product_id: number }) {
   return (
     <div className="flex flex-col items-end gap-2">
       <form action={handleSubmit} className="flex flex-col w-full">
-        <div className="flex flex-row items-center gap-4">
+        {isBiddingActive(bidding_end_time) && (
+          <div className="flex flex-row items-center gap-4">
           <Input
             type="hidden"
             id="product_id"
@@ -52,6 +54,7 @@ export async function ProductBidForm({ product_id }: { product_id: number }) {
             className="col-span-3"
           />
         </div>
+        )}
         <DialogFooter className="w-full flex flex-row gap-4 justify-between sm:justify-between mt-4">
           
           <div className="w-full flex justify-end gap-4">
@@ -64,7 +67,9 @@ export async function ProductBidForm({ product_id }: { product_id: number }) {
                 Close
               </Button>
             </DialogClose>
-            <Button type="submit">Place Bid</Button>
+            {isBiddingActive(bidding_end_time) && (
+              <Button type="submit">Place Bid</Button>
+            )}
           </div>
         </DialogFooter>
       </form>

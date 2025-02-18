@@ -1,7 +1,6 @@
 import { ProductDialog } from "@/components/product/product-dialog";
 import { formatDateTime } from "../lib/utils";
 import { getProductsWithBids, testProtectedRoute } from "@/lib/actions";
-import { getAuthHeaders } from "../lib/getAuthHeaders";
 import { getSession } from "@/lib/auth";
 
 export default async function Bids() {
@@ -22,7 +21,7 @@ export default async function Bids() {
               title={product.name}
               description={product.description}
               highestBid={product.highest_bid}
-              biddingEndTime={formatDateTime(product.bidding_end_time)}
+              biddingEndTime={product.bidding_end_time}
               startingPrice={product.starting_price}
               userBid={product.user_bid_amount}
             />
