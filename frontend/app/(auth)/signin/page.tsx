@@ -1,22 +1,18 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { loginAsync } from "@/store/authSlice";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from 'next/navigation';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { toast } from "sonner";
-
+import { toast } from "@/hooks/use-toast";
+import { login } from "@/lib/auth";
 export default function SignIn() {
-const dispatch = useAppDispatch();
   const router = useRouter();
-  const auth = useAppSelector((state) => state.auth);
 
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/app';
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -24,15 +20,25 @@ const dispatch = useAppDispatch();
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const resultAction = await dispatch(loginAsync({ email, password }));
-      if (loginAsync.fulfilled.match(resultAction)) {
-        console.log(resultAction)
-        // Redirect on successful login
-        toast("Login successful");
+      var formData = new FormData();
+      formData.append("username", email);
+      formData.append("password", password);
+      const response = await login(formData);
+      if (response === null) {
+        setErrorMessage("Login failed. Please Try Again");
+        toast({
+          title: "Error",
+          description: "Login failed. Please Try Again",
+          variant: "destructive",
+        })
         router.push("/");
-      } else {
-        // Handle error (display message, etc.)
-        setErrorMessage("Login failed: " + (resultAction.payload || "Unknown error"));
+      }
+      else {
+        toast({
+          title: "Success",
+          description: "Login successful",
+        })
+        router.push(callbackUrl);
       }
     } catch (error) {
       console.error("Login error:", error);

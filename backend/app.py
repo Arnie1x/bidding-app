@@ -49,7 +49,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(days=7)):
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + expires_delta
-    to_encode.update({"exp": expire})
+    to_encode.update({"iat": datetime.now(timezone.utc), "exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm="HS256")
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(lambda: db.Session())):
@@ -104,8 +104,17 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
         admin_id = None
     if not user or not pwd_context.verify(form_data.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid username or password")
-    token = create_access_token({"sub": user.email})
-    return {"user_id": user.user_id, "admin_id" : admin_id, "name": user.name, "email": user.email, "access_token": token, "token_type": "bearer"}
+    token = create_access_token({"user": {"user_id": user.user_id, "admin_id" : admin_id, "name": user.name, "email": user.email}})
+    return {"access_token": token, "token_type": "bearer"}
+
+@app.get("/refresh-token")
+async def refresh_token(token: str = Depends(oauth2_scheme), db: Session = Depends(lambda: db.Session())):
+    payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    user = db.query(User).filter(User.email == payload["user"]["email"]).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    new_token = create_access_token({"user_id": user.user_id, "admin_id" : payload["user"]["admin_id"], "name": user.name, "email": user.email})
+    return {"access_token": new_token, "token_type": "bearer"}
 
 @app.post("/signup")
 async def signup(user: UserSignUp, db: Session = Depends(lambda: db.Session())):
@@ -166,10 +175,10 @@ async def list_products(db: Session = Depends(lambda: db.Session())):
         product.highest_bid = highest_bid
     return products
 
-@app.get("/products/{user_id}/bids")
-async def get_products_with_bids(user_id: int, db: Session = Depends(lambda: db.Session())):
+@app.get("/products/bids")
+async def get_products_with_bids(db: Session = Depends(lambda: db.Session()), current_user: User = Depends(get_current_user)):
     # Fetch all bids placed by the current user
-    user_bids = db.query(Bid).filter(Bid.user_id == user_id).order_by(Bid.bid_id.desc()).all()
+    user_bids = db.query(Bid).filter(Bid.user_id == current_user.user_id).order_by(Bid.bid_id.desc()).all()
     
     # Filter out older bids for a product and only leave the latest bid by that user for a specific product
     latest_bids = {}
@@ -216,13 +225,13 @@ async def delete_product(product_id: int, db: Session = Depends(lambda: db.Sessi
     db.commit()
     return {"message": "Product deleted successfully"}
 
-@app.get("/product/{product_id}/bids")
-async def list_bids(product_id: int, db: Session = Depends(lambda: db.Session())):
-    product = db.query(Product).filter(Product.product_id == product_id).first()
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    bids = db.query(Bid).filter(Bid.product_id == product_id).order_by(Bid.amount.desc()).all()
-    return bids
+# @app.get("/product/{product_id}/bids")
+# async def list_bids(product_id: int, db: Session = Depends(lambda: db.Session())):
+#     product = db.query(Product).filter(Product.product_id == product_id).first()
+#     if not product:
+#         raise HTTPException(status_code=404, detail="Product not found")
+#     bids = db.query(Bid).filter(Bid.product_id == product_id).order_by(Bid.amount.desc()).all()
+#     return bids
 
 
 @app.post("/product/{product_id}/bid")

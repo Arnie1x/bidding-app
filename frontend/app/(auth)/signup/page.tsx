@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { apiClient } from "@/utils/apiClient";
-import { toast } from "@/lib/actions";
+import { toast } from "@/hooks/use-toast";
 
 export default function SignUp() {
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   // const callbackUrl = searchParams.get("callbackUrl") || "/";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -46,7 +46,10 @@ export default function SignUp() {
         password: data.password
       }
       await apiClient.post("/signup", finalData);
-      toast("Account Created Successfully.", "Sign Up");
+      toast({
+        title: "Success",
+        description: "Account Created Successfully",
+      });
       router.push("/signin");
     } catch (error) {
       console.log(error);

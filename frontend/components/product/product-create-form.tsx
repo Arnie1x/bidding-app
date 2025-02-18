@@ -1,23 +1,15 @@
-'use client';
-
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "../ui/label";
-import { FormEvent, useState } from 'react';
 import { Textarea } from "@/components/ui/textarea";
 import { DialogClose } from "../ui/dialog";
 import { createProduct } from "@/lib/actions";
 import { toast } from "@/hooks/use-toast";
 
 const ProductCreateForm = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [startingPrice, setStartingPrice] = useState(0);
-  const [biddingEndTime, setBiddingEndTime] = useState('');
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    const res = await createProduct({ name, description, starting_price: startingPrice, bidding_end_time: new Date(biddingEndTime) });
+  const handleSubmit = async (formData: FormData) => {
+    "use server";
+    const res = await createProduct(formData);
       if (res.errors) {
         toast({
           title: "Error",
@@ -34,15 +26,14 @@ const ProductCreateForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form action={handleSubmit} className="flex flex-col gap-4">
       <div>
         <Label htmlFor="name">Name</Label>
         <Input
           id="name"
           name="name"
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          placeholder="Product A"
         />
       </div>
       <div>
@@ -50,28 +41,24 @@ const ProductCreateForm = () => {
         <Textarea
           id="description"
           name="description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          placeholder="lorem ipsum dolor sit amet"
         />
       </div>
       <div>
-        <Label htmlFor="startingPrice">Starting Price</Label>
+        <Label htmlFor="starting_price">Starting Price</Label>
         <Input
-          id="startingPrice"
-          name="startingPrice"
+          id="starting_price"
+          name="starting_price"
           type="number"
-          value={startingPrice}
-          onChange={(e) => setStartingPrice(e.target.valueAsNumber)}
+          placeholder="e.g. 1000"
         />
       </div>
       <div>
         <Label htmlFor="biddingEndTime">Bidding End Time</Label>
         <Input
-          id="biddingEndTime"
-          name="biddingEndTime"
+          id="bidding_end_time"
+          name="bidding_end_time"
           type="datetime-local"
-          value={biddingEndTime}
-          onChange={(e) => setBiddingEndTime(e.target.value)}
         />
       </div>
       {/* <Button type="submit">Create Product</Button> */}

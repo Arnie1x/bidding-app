@@ -1,17 +1,15 @@
 import { ProductDialog } from "@/components/product/product-dialog";
 import { formatDateTime } from "../lib/utils";
 import { getProductsWithBids, testProtectedRoute } from "@/lib/actions";
-import { useAuthHeaders } from "@/utils/headers";
-import { store } from "@/store/store";
-import { getAuthToken } from "@/utils/getAuthToken";
+import { getAuthHeaders } from "../lib/getAuthHeaders";
+import { getSession } from "@/lib/auth";
 
 export default async function Bids() {
-  const res = await getProductsWithBids();
+  // const session = await getSession();
+  const res = await getProductsWithBids(null);
   const products = res.data;
   if (!res.errors) {
   };
-  const token = await getAuthToken();
-  console.log(token)
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-2xl p-3 w-full font-bold">My Bids</h1>

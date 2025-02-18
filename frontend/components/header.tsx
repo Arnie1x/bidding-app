@@ -1,40 +1,15 @@
-"use client";
-
 import { Button } from "./ui/button";
 import Divider from "./ui/divider";
 import ProductCreateDialog from "./product/product-create-dialog";
-import { useAppDispatch } from "@/store/hooks";
-import { logout } from "@/store/authSlice";
-import { usePathname, useRouter } from "next/navigation";
+import { getSession, logout } from "@/lib/auth";
 import Link from "next/link";
-import { store } from "@/store/store";
-import { useEffect, useState } from "react";
+import { redirect } from "next/navigation";
 
-export default function Header() {
-    const router = useRouter();
-    const pathName = usePathname();
-    const [state, setState] = useState({})
-    const [user, setUser] = useState({})
-
-    useEffect(() => {
-        const state =  store.getState();
-        return setState(state);
-    }, [pathName])
-
-    useEffect(() => {
-        const user =  store.getState().auth.user || {};
-        return setUser(user);
-    }, [state])
-
-//   const state = store.getState();
-  const dispatch = useAppDispatch();
-  const handleSignout = () => {
-    dispatch(logout());
-    router.push("/signin");
-  };
-  const handleSignin = () => {
-    router.push("/signin");
-  };
+export default async function Header() {
+  // const router = useRouter();
+  // const pathName = usePathname();
+  let session = await getSession();
+  let user = session?.user || {};
 
   return (
     <header className="sticky top-0 flex w-full justify-between items-center p-5 rounded-xl bg-green-600 my-2 text-white">
@@ -46,9 +21,12 @@ export default function Header() {
           <>
             <p className="text-sm px-4">Hello, {user.name}</p>
             <Divider orientation="vertical" />
-            <Button onClick={() => router.push('/bids')} variant="ghost">
-            View Bids
-          </Button>
+            <form action={
+              async () => {
+                "use server";
+                redirect("/bids");
+              }
+            }><Button variant="ghost">View Bids</Button></form>
             <Divider orientation="vertical" />
           </>
         )}
@@ -59,13 +37,28 @@ export default function Header() {
           </>
         )}
         {user.name ? (
-          <Button onClick={handleSignout} variant="ghost">
-            Sign Out
-          </Button>
+          <form
+            action={async () => {
+              "use server";
+              await logout();
+              redirect("/signin");
+            }}
+          >
+            <Button type="submit" variant="ghost">
+              Sign Out
+            </Button>
+          </form>
         ) : (
-          <Button onClick={handleSignin} variant="ghost">
-            Sign In
-          </Button>
+          <form
+            action={async () => {
+              "use server";
+              redirect("/signin");
+            }}
+          >
+            <Button type="submit" variant="ghost">
+              Sign In
+            </Button>
+          </form>
         )}
       </div>
     </header>
