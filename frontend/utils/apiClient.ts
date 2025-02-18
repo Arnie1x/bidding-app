@@ -1,5 +1,6 @@
+"use server";
 import axios from "axios";
-import { getSession } from "@/lib/auth";
+import { getRawSession } from "@/lib/auth";
 
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -7,9 +8,7 @@ export const apiClient = axios.create({
 
 // Attach an interceptor that gets the current token on each request.
 apiClient.interceptors.request.use(async (config) => {
-  const session = await getSession();
-  console.log("API Client Session: " + session?.access_token);
-  const token = session?.access_token;
+  const token = await getRawSession();
   if (token) {
       config.headers = {
         ...config.headers,

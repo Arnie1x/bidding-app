@@ -68,7 +68,12 @@ interface BidFormData {
 export async function placeBid(formData: FormData) {
     try {
         const product_id = formData.get("product_id") as string;
-        const res = await client.post(`/product/${product_id}/bid`, formData);
+        const bid_amount = formData.get("bid_amount") as string;
+        console.log("Bid Data: " + product_id + " " + bid_amount);
+        const res = await client.post(`/product/${product_id}/bid`, {
+            product_id: parseInt(product_id),
+            bid_amount: parseInt(bid_amount)
+        });
         // console.log(res.data);
         return new Data(res.data, null);
     } catch (error) {
@@ -95,13 +100,9 @@ export async function getProducts() {
     }
 }
 
-export async function getProductsWithBids(headers: { [key: string]: string } | null) {
+export async function getProductsWithBids() {
     try {
-        // TODO :: Fix authentication such that I can fetch bids based on token
-        if (!headers) {
-            headers = {};
-        }
-        const res = await client.get(`/products/bids`, headers);
+        const res = await client.get(`/products/bids`);
         if (res.data && res.status !== 200) {
             console.log(res.data);
             return new Data(null, res.data);

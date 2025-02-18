@@ -1,6 +1,7 @@
 import { getProducts } from "@/lib/actions";
 import { ProductDialog } from "@/components/product/product-dialog";
 import { formatDateTime } from "@/app/lib/utils";
+import { getSession } from "@/lib/auth";
 
 export default async function Dashboard() {
   const products = await getProducts();

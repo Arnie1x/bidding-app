@@ -5,16 +5,15 @@ import { getAuthHeaders } from "../lib/getAuthHeaders";
 import { getSession } from "@/lib/auth";
 
 export default async function Bids() {
-  // const session = await getSession();
-  const res = await getProductsWithBids(null);
-  const products = res.data;
+  const res = await getProductsWithBids();
+  const products: any[] = res.data || [];
   if (!res.errors) {
   };
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-2xl p-3 w-full font-bold">My Bids</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {res.errors && <p>{res.errors}</p>}
+        {/* {res.errors && <p>{res.errors}</p>} */}
         {products &&
           products.map((product) => (
             <ProductDialog

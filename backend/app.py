@@ -55,8 +55,7 @@ def create_access_token(data: dict, expires_delta: timedelta = timedelta(days=7)
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(lambda: db.Session())):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        user_email = payload.get("sub")
-        print("User Email" + user_email)
+        user_email = payload["user"]["email"] or None
         if user_email is None:
             raise HTTPException(status_code=401, detail="Invalid token")
     except jwt.ExpiredSignatureError:
@@ -113,7 +112,7 @@ async def refresh_token(token: str = Depends(oauth2_scheme), db: Session = Depen
     user = db.query(User).filter(User.email == payload["user"]["email"]).first()
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
-    new_token = create_access_token({"user_id": user.user_id, "admin_id" : payload["user"]["admin_id"], "name": user.name, "email": user.email})
+    new_token = create_access_token({"user": {"user_id": user.user_id, "admin_id" : payload["user"]["admin_id"], "name": user.name, "email": user.email}})
     return {"access_token": new_token, "token_type": "bearer"}
 
 @app.post("/signup")

@@ -59,6 +59,12 @@ export async function getSession() {
     return await decrypt(session);
 }
 
+export async function getRawSession() {
+    const session = (await cookies()).get("session")?.value;
+    if (!session) return null;
+    return session;
+}
+
 export async function updateSession(request: NextRequest) {
     const session = request.cookies.get("session")?.value;
     if (!session) return;
@@ -76,7 +82,7 @@ export async function updateSession(request: NextRequest) {
 
         if (response.status === 200 && response.data.access_token) {
             // Update the session in the cookie
-            (await cookies()).set("session", response.data.access_token, { httpOnly: true });
+            (await cookies()).set("session", response.data.access_token, { httpOnly: true, maxAge: 60 * 60 * 24 * 7 });
         }
         const res = NextResponse.next();
         // res.headers.set("Set-Cookie", `session=${response.data.access_token}; HttpOnly;`);

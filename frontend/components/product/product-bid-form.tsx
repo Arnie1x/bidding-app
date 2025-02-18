@@ -15,18 +15,18 @@ export async function ProductBidForm({ product_id }: { product_id: number }) {
     "use server";
     const res = await placeBid(formData);
     // const res = await testProtectedRoute();
-    if (res.errors) {
-      toast({
-        title: "Error",
-        description: `${res.errors}`,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Bid placed successfully for $ " + formData.get("amount"),
-      });
-    }
+    // if (res.errors) {
+    //   toast({
+    //     title: "Error",
+    //     description: `${res.errors}`,
+    //     variant: "destructive",
+    //   });
+    // } else {
+    //   toast({
+    //     title: "Success",
+    //     description: "Bid placed successfully for $ " + formData.get("amount"),
+    //   });
+    // }
     // const router = useRouter();
     // router.reload();
   };
@@ -35,25 +35,25 @@ export async function ProductBidForm({ product_id }: { product_id: number }) {
     <div className="flex flex-col items-end gap-2">
       <form action={handleSubmit} className="flex flex-col w-full">
         <div className="flex flex-row items-center gap-4">
-          <Label htmlFor="username" className="text-right text-sm">
-            Bid Amount
-          </Label>
           <Input
             type="hidden"
             id="product_id"
             name="product_id"
             value={product_id}
           />
+          <Label htmlFor="bid_amount" className="text-right text-sm">
+            Bid Amount
+          </Label>
           <Input
             type="number"
-            id="Amount"
-            name="amount"
+            id="bid_amount"
+            name="bid_amount"
             placeholder="e.g. 1000"
             className="col-span-3"
           />
         </div>
         <DialogFooter className="w-full flex flex-row gap-4 justify-between sm:justify-between mt-4">
-          {user.admin_id && <></>}
+          
           <div className="w-full flex justify-end gap-4">
             <DialogClose asChild>
               <Button
@@ -68,7 +68,8 @@ export async function ProductBidForm({ product_id }: { product_id: number }) {
           </div>
         </DialogFooter>
       </form>
-      <form className="absolute bottom-0 left-0 p-6"
+      {user.admin_id && (
+        <form className="absolute bottom-0 left-0 p-6"
         action={async () => {
           "use server";
           const res = await deleteProduct(product_id);
@@ -89,6 +90,8 @@ export async function ProductBidForm({ product_id }: { product_id: number }) {
           Delete
         </Button>
       </form>
+      )}
+      
     </div>
   );
 }
