@@ -1,4 +1,3 @@
-"use server";
 import axios from "axios";
 import { getRawSession } from "@/lib/auth";
 

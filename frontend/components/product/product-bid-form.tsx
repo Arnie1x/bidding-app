@@ -15,7 +15,6 @@ export async function ProductBidForm({ product_id, bidding_end_time }: { product
   const handleSubmit = async (formData: FormData) => {
     "use server";
     const res = await placeBid(formData);
-    // const res = await testProtectedRoute();
     // if (res.errors) {
     //   toast({
     //     title: "Error",

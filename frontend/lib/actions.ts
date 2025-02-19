@@ -114,10 +114,14 @@ export async function getProductsWithBids() {
     }
 }
 
-export async function createProduct(formData: FormData) {
+export async function createProduct(name: string, description: string, starting_price: number, bidding_end_date: Date, bidding_end_hour: string, bidding_end_minute: string) {
     try {
-        formData.set("bidding_end_time", formData.get("bidding_end_time") as string);
-        const res = await client.post('/add-product', formData);
+        const res = await client.post('/add-product', {
+            name: name,
+            description: description,
+            starting_price: starting_price,
+            bidding_end_time: new Date(bidding_end_date.getFullYear(), bidding_end_date.getMonth(), bidding_end_date.getDate(), parseInt(bidding_end_hour), parseInt(bidding_end_minute))
+        });
         return new Data(res.data, null);
     } catch (error) {
         console.error(error);

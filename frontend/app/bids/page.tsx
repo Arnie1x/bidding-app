@@ -1,7 +1,5 @@
 import { ProductDialog } from "@/components/product/product-dialog";
-import { formatDateTime } from "../lib/utils";
-import { getProductsWithBids, testProtectedRoute } from "@/lib/actions";
-import { getSession } from "@/lib/auth";
+import { getProductsWithBids } from "@/lib/actions";
 
 export default async function Bids() {
   const res = await getProductsWithBids();
