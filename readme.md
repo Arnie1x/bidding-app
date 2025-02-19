@@ -18,7 +18,7 @@ This is a full-stack bidding application where admins can add products, and user
 
 ### Frontend
 
-- **React** with **Vite** for a fast and modern web experience.
+- **Next.js** with **pnpm**
 - Environment variables stored in `/frontend/.env`.
 
 ### Backend
@@ -36,8 +36,8 @@ This is a full-stack bidding application where admins can add products, and user
 
 Make sure the following are installed on your system:
 
-- **Node.js** (v16 or later)
-- **npm**
+- **Node.js**
+- **pnpm**
 - **Python** (v3.9 or later)
 - **MySQL** database server
 
@@ -84,14 +84,12 @@ Make sure the following are installed on your system:
 7. Run the backend server:
 
     ```bash
-    uvicorn main:app --reload
+    uvicorn app:app --reload --host 0.0.0.0 
     or
     python3 app.py
     ```
 
-### Frontend Setup (Not Yet Developed)
-
-**Note:** This is a placeholder for when the frontend is developed.
+### Frontend Setup
 
 1. Navigate to the frontend folder:
 
@@ -102,7 +100,7 @@ Make sure the following are installed on your system:
 2. Install the required dependencies:
 
     ```bash
-    npm install
+    pnpm install
     ```
 
 3. Configure environment variables:
@@ -111,10 +109,10 @@ Make sure the following are installed on your system:
 4. Start the frontend server:
 
     ```bash
-    npm run dev
+    pnpm run dev
     ```
 
-The frontend will start running at <http://localhost:5173> by default.
+The frontend will start running at <http://localhost:3000> by default.
 
 ## Backend API Endpoints
 
@@ -123,6 +121,7 @@ The frontend will start running at <http://localhost:5173> by default.
 - POST /token - Authenticate users and return a JWT token.
 - POST /signup - Sign up new users.
 - POST /add-admin - Add a new admin (admin-only route).
+- GET /refresh-token - Refresh the token when accessing a protected route to persist the cookie and prevent sign out.
 
 ### Product Management
 
@@ -146,6 +145,28 @@ The frontend will start running at <http://localhost:5173> by default.
 
 - Replace `<user>`, `<password>`, `<host>`, `<port>`, and `<database_name>` with appropriate values.
 
-## Future Development
+## Screenshots
 
-**Frontend Development:** The React-based frontend is under development and will include user-friendly interfaces for bidding and product management.
+- **Dashboard**:
+
+    ![Dashboard](./public/screenshots/dashboard.png)
+
+- **Sign In**:
+
+    ![Sign In](./public/screenshots/sign-in.png)
+
+- **Sign Up**:
+
+    ![Sign Up](./public/screenshots/sign-up.png)
+
+- **Bid Product**:
+
+    ![Bid Product](./public/screenshots/bid-product.png)
+
+- **Expired Bid**:
+
+    ![Expired Bids](./public/screenshots/expired-bid.png)
+
+- **Admin Add Product**:
+
+    ![Admin Dashboard](./public/screenshots/add-product.png)
